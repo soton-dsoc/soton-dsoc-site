@@ -18,11 +18,15 @@ function Events() {
         media: string[]
     }
 
-    var events: Event[] = [];
+    const [upcomingEvents, setUpcomingEvents] = useState<Event[]>([]);
+    const [pastEvents, setPastEvents] = useState<Event[]>([]);
+    const [visiblePastEvents, setVisiblePastEvents] = useState(5);
 
-    function getEvents() {
+    useEffect(() => {
+        const events: Event[] = [];
+        
+        // Get all events
         for (let i = 0; i < eventsSource.events.length; i++) {
-
             const e = eventsSource.events[i];
             
             events.push({
@@ -37,39 +41,36 @@ function Events() {
                 media: e.media
             })
         }
-    }
 
-    getEvents();
+        const upcoming: Event[] = [];
+        const past: Event[] = [];
 
-    var upcomingEvents: Event[] = [];
-    var pastEvents: Event[] = [];
-
-    function categoriseEvents() {
-
-        events.map((e) => {
-            var today = new Date();
-
-            if (e.date > today) { // future
-                upcomingEvents.push(e);
-            } else { // past
-                pastEvents.push(e);
+        // Categorize events
+        events.forEach((e) => {
+            const today = new Date();
+            if (e.date > today) {
+                upcoming.push(e);
+            } else {
+                past.push(e);
             }
         });
 
-        upcomingEvents.sort((a, b) => {
+        // Sort events
+        upcoming.sort((a, b) => {
             if (a.date > b.date) return 1;
             if (a.date < b.date) return -1;
             return 0;
         });
 
-        pastEvents.sort((a, b) => {
+        past.sort((a, b) => {
             if (a.date > b.date) return -1;
             if (a.date < b.date) return 1;
             return 0;
         });
-    }
 
-    categoriseEvents();
+        setUpcomingEvents(upcoming);
+        setPastEvents(past);
+    }, []);
 
     return (
         <div id="events" className={styles.events} style={{ paddingTop: '70px' }}>
@@ -89,12 +90,28 @@ function Events() {
                 <div className={styles.past}>
                     <h2>Past Events</h2>
                         {
-                            pastEvents.map((e, i) =>
+                            pastEvents.slice(0, visiblePastEvents).map((e, i) =>
                                 <div key={i}>
                                     <EventObject data={e} category="past"/>
                                 </div>
                             )
                         }
+                        {visiblePastEvents < pastEvents.length && (
+                            <button 
+                                className={styles.showMoreButton}
+                                onClick={() => setVisiblePastEvents(Math.min(visiblePastEvents + 5, pastEvents.length))}
+                            >
+                                Show More
+                            </button>
+                        )}
+                        {visiblePastEvents >= pastEvents.length && pastEvents.length > 5 && (
+                            <button 
+                                className={styles.showMoreButton}
+                                onClick={() => setVisiblePastEvents(5)}
+                            >
+                                Show Less
+                            </button>
+                        )}
                 </div>
 
         </div>
