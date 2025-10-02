@@ -24,6 +24,9 @@
 
 .collapsible p {
     font-size: 14px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
 }
 
 .left {
