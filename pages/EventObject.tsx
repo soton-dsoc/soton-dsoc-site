@@ -39,14 +39,14 @@ function EventObject(props: any) {
     }
 
     // Extract sign-up link from abstract for upcoming events
-    function getSignUpLink() {
-        if (props.category !== "upcoming") return null;
+    function getSignUpLink(): string | undefined {
+        if (props.category !== "upcoming") return undefined;
         const signUpText = abstract.find(text => text.includes("Sign up here:"));
         if (signUpText) {
             const urlMatch = signUpText.match(/(https?:\/\/[^\s]+)/);
-            return urlMatch ? urlMatch[0] : null;
+            return urlMatch ? urlMatch[0] : undefined;
         }
-        return null;
+        return undefined;
     }
 
     // have the upcoming events open by default
@@ -54,7 +54,7 @@ function EventObject(props: any) {
         if (props.category === "upcoming") {
             setActive(true)
         }
-    })
+    }, [props.category])
 
     return(
         <div className={styles.wrapper}>
