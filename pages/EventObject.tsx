@@ -23,6 +23,32 @@ function EventObject(props: any) {
         return elem?.scrollHeight;
     }
 
+    // Helper function to convert URLs to clickable links
+    function convertUrlsToLinks(text: string) {
+        const urlRegex = /(https?:\/\/[^\s]+)/g;
+        return text.split(urlRegex).map((part, index) => {
+            if (urlRegex.test(part)) {
+                return (
+                    <a key={index} href={part} target="_blank" rel="noopener noreferrer" style={{ color: '#0066FF', textDecoration: 'underline' }}>
+                        {part}
+                    </a>
+                );
+            }
+            return part;
+        });
+    }
+
+    // Extract sign-up link from abstract for upcoming events
+    function getSignUpLink() {
+        if (props.category !== "upcoming") return null;
+        const signUpText = abstract.find(text => text.includes("Sign up here:"));
+        if (signUpText) {
+            const urlMatch = signUpText.match(/(https?:\/\/[^\s]+)/);
+            return urlMatch ? urlMatch[0] : null;
+        }
+        return null;
+    }
+
     // have the upcoming events open by default
     useEffect(() => {
         if (props.category === "upcoming") {
@@ -34,7 +60,21 @@ function EventObject(props: any) {
         <div className={styles.wrapper}>
             {/* <div className={styles.box} style={{ background: `${props.category === "upcoming" ? "linear-gradient(90deg, #9000A8, #0066FF)" : ""}`}} onClick={() => setActive(!active)}> */}
             <div className={`${styles.box} ${props.category === "upcoming" ? styles.upcoming : ""}`} onClick={() => setActive(!active)}>
-                <div className={styles.title}>{title}</div>
+                <div className={styles.title}>
+                    {props.category === "upcoming" && getSignUpLink() ? (
+                        <a 
+                            href={getSignUpLink()} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            style={{ color: 'inherit', textDecoration: 'none' }}
+                        >
+                            {title}
+                        </a>
+                    ) : (
+                        title
+                    )}
+                </div>
                 <div className={styles.date}>{date}</div>
             </div>
             <div className={`${styles.collapsible} ${active ? styles.active : ""}`} id={`collapsible${key}`} style={{ maxHeight: active ? getHeight() : 0}}>
@@ -44,7 +84,7 @@ function EventObject(props: any) {
                             <div className={styles.title}>Abstract</div>
                             {
                                 abstract.map((s: string, i: number) =>
-                                    <p key={i}>{s}</p>
+                                    <p key={i}>{convertUrlsToLinks(s)}</p>
                                 )
                             }
                         </div>

@@ -1,6 +1,27 @@
 {
     "events": [
         {
+            "title": "Welcome to Web3 – Society Kickoff & Intro to Decentralization and Crypto",
+            "date": "2025-10-07T18:00:00",
+            "location": "Room 1065, Murray Building (58), Southampton",
+            "abstract": [
+                "We're kicking off the new academic year with our first society event! Come along to meet fellow students & the new DSoc committee, get a beginner-friendly intro to blockchain & crypto, learn what we have planned for this year (workshops, socials, hackathons & more!), and hear all the details about the upcoming Encode Hackathon later this month — how to sign up, what to expect, and how you can get involved as a hacker or supporter!",
+                "This is the perfect chance to get started if you're curious about Web3, or to connect with others if you're already deep in the space. Bring your questions, ideas, and energy — we can't wait to meet you!",
+                "👉 Sign up here: https://luma.com/gby7gphb"
+            ],
+            "organisers": [
+                "dSoc"
+            ],
+            "speakers": [
+                "Dawid Pisarczyk"
+            ],
+            "learningOutcomes": [
+                "Get a beginner-friendly intro to blockchain & crypto",
+                "Learn about planned workshops and events"
+            ],
+            "media": []
+        },
+        {
             "title": "Ethereum London Relaunch",
             "date": "2025-07-30T18:00:00",
             "location": "Encode Hub, 41 Pitfield St, London N1 6DA, UK",
