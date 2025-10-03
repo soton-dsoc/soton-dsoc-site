@@ -20,6 +20,14 @@
     font-weight: 600;
 }
 
+.about > h3 {
+    text-align: center;
+    margin-bottom: 30px;
+    margin-top: 60px;
+    font-size: 2rem;
+    font-weight: 500;
+}
+
 .aboutContainer {
     display: flex;
     flex-direction: column;
@@ -268,5 +276,32 @@
 @media only screen and (max-width: 480px) {
     .team {
         gap: 30px;
+    }
+}
+
+.officialPartners, .communityPartners {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 60px;
+    margin-bottom: 40px;
+}
+
+.communityPartners {
+    gap: 40px;
+    margin-bottom: 80px;
+}
+
+@media only screen and (max-width: 992px) {
+    .officialPartners, .communityPartners {
+        gap: 40px;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .officialPartners, .communityPartners {
+        gap: 30px;
+        flex-direction: column;
     }
 }

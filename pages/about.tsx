@@ -1,7 +1,14 @@
 import styles from '../styles/About.module.css'
 import React, { useEffect, useRef } from 'react';
-import cryptoModule from 'crypto';
-import VanillaTilt from 'vanilla-tilt';
+// Use dynamic imports to avoid SSR issues
+let cryptoModule: any = null;
+let VanillaTilt: any = null;
+
+if (typeof window !== 'undefined') {
+    // Client-side only imports
+    import('crypto').then(crypto => cryptoModule = crypto);
+    VanillaTilt = require('vanilla-tilt');
+}
 import Image from 'next/image';
 
 import { StaticImageData } from 'next/image';
@@ -16,12 +23,15 @@ import dawid from '../public/dawid.jpeg'
 /* import ash from '../public/ash.jpg' */
 
 
+
 function Tilt(props: any): JSX.Element {
     const { options, ...rest } = props;
     const tilt = useRef(null);
   
     useEffect(() => {
-      VanillaTilt.init(tilt.current as any, options);
+        if (VanillaTilt && tilt.current) {
+            VanillaTilt.init(tilt.current, options);
+        }
     }, [options]);
   
     return <div ref={tilt} {...rest} />;
@@ -32,10 +42,8 @@ function About() {
 
     const [doesTilt, setTilt] = React.useState(true);
 
-    if (typeof window !== "undefined") {
-        // let width = Math.max(window.screen.width, window.innerWidth);
-
-        window.addEventListener('resize', () => {
+    useEffect(() => {
+        const handleResize = () => {
             let width = window.innerWidth;
 
             if (width < 768) {
@@ -43,8 +51,19 @@ function About() {
             } else {
                 setTilt(true);
             }
-        })
-    }
+        };
+
+        if (typeof window !== "undefined") {
+            handleResize(); // Set initial state
+            window.addEventListener('resize', handleResize);
+        }
+
+        return () => {
+            if (typeof window !== "undefined") {
+                window.removeEventListener('resize', handleResize);
+            }
+        };
+    }, []);
 
 
     type Person = {
@@ -105,9 +124,17 @@ function About() {
     ]
 
     function calculateHash(p: Person): string {
-        var s: string = `${p.name} ${p.photo.toString()} ${p.role} ${p.linkedin} ${p.twitter} ${p.email} ${p.discord}`;
-        var hash: string = cryptoModule.createHash('sha256').update(s).digest("hex");
-        return hash;
+        try {
+            if (cryptoModule && cryptoModule.createHash) {
+                var s: string = `${p.name} ${p.photo.toString()} ${p.role} ${p.linkedin} ${p.twitter} ${p.email} ${p.discord}`;
+                var hash: string = cryptoModule.createHash('sha256').update(s).digest("hex");
+                return hash;
+            }
+        } catch (error) {
+            console.warn('Crypto module not available:', error);
+        }
+        // Fallback to simple hash if crypto is not available
+        return Math.random().toString(36).substring(2, 15);
     }
 
     return (
@@ -189,6 +216,29 @@ function About() {
                         </div>
                     )
                 }
+            </div>
+
+            <h2>Official Partners</h2>
+            <div className={styles.officialPartners}>
+                <a href="https://www.encodeclub.com/" target="_blank" rel="noopener noreferrer">
+                    <Image src="/encode_logo.png" alt="Encode Logo" width={200} height={200} />
+                </a>
+                <a href="https://stellar.org/" target="_blank" rel="noopener noreferrer">
+                    <Image src="/stellar_logo.png" alt="Stellar Logo" width={200} height={200} />
+                </a>
+                <a href="https://www.chainreactionglobal.com/" target="_blank" rel="noopener noreferrer">
+                    <Image src="/chainreaction_logo.png" alt="ChainReaction Logo" width={217} height={64} />
+                </a>
+            </div>
+
+            <h3>Community Partners</h3>
+            <div className={styles.communityPartners}>
+                <a href="https://chain.link/" target="_blank" rel="noopener noreferrer">
+                    <Image src="/chainlink_logo.png" alt="Chainlink Logo" width={200} height={200} />
+                </a>
+                <a href="https://www.cryptomondays.io/" target="_blank" rel="noopener noreferrer">
+                    <Image src="/cryptomondays_logo.png" alt="CryptoMondays Logo" width={200} height={200} />
+                </a>
             </div>
         </div>
     )
