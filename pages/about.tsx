@@ -239,6 +239,9 @@ function About() {
                 <a href="https://www.cryptomondays.io/" target="_blank" rel="noopener noreferrer">
                     <Image src="/cryptomondays_logo.png" alt="CryptoMondays Logo" width={200} height={200} />
                 </a>
+                 <a href="https://venice.ai/" target="_blank" rel="noopener noreferrer">
+                    <Image src="/venice_logo.png" alt="Venice Logo" width={200} height={200} />
+                </a>
             </div>
         </div>
     )
